@@ -1,0 +1,158 @@
+version: 2
+
+before:
+  hooks:
+    # Generate swagger docs before build
+    - go install github.com/swaggo/swag/cmd/swag@latest
+    - swag init
+    # Run tests
+    - go test ./...
+    # Clean up
+    - go mod tidy
+
+builds:
+  - id: "go-api"
+    binary: "go-api"
+    main: ./main.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    # Exclude invalid combinations
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+      - -X main.builtBy=goreleaser
+    flags:
+      - -trimpath
+
+archives:
+  - id: "archive"
+    builds:
+      - "go-api"
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE*
+      - docs/swagger.json
+      - docs/swagger.yaml
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+      - "merge conflict"
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+  groups:
+    - title: "🚀 Features"
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: "🐛 Bug fixes"
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: "📚 Documentation updates"
+      regexp: "^.*docs[(\\w)]*:+.*$"
+      order: 2
+    - title: "🔧 Other changes"
+      order: 999
+
+release:
+  github:
+    owner: "VIKMSTR" # Replace with your GitHub username
+    name: "go-api" # Replace with your repository name
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## Release {{ .Version }}
+
+    Welcome to this new release of go-api!
+  footer: |
+    ## Docker
+
+    ```bash
+    docker pull ghcr.io/VIKMSTR/go-api:{{ .Version }}
+    ```
+
+    **Full Changelog**: https://github.com/VIKMSTR/go-api/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+# Docker images
+dockers:
+  - image_templates:
+      - "ghcr.io/your-github-username/your-project-name:{{ .Version }}-amd64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/VIKMSTR/go-api"
+  - image_templates:
+      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-arm64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/VIKMSTR/go-api"
+
+docker_manifests:
+  - name_template: "ghcr.io/VIKMSTR/go-api:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-amd64"
+      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/VIKMSTR/go-api:latest"
+    image_templates:
+      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-amd64"
+      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-arm64"
+
+# Homebrew tap (optional)
+#brews:
+#  - name: "your-project"
+#    repository:
+#      owner: "your-github-username"
+#      name: "homebrew-tap"
+#    description: "Your project description"
+#    homepage: "https://github.com/your-github-username/your-project-name"
+#    license: "MIT"
+#    folder: Formula
+#    install: |
+#      bin.install "your-project"
+
+# Snapcraft (optional)
+snapcrafts:
+  - name: "go-api"
+    summary: "The go-api application"
+    description: "Example of go-api"
+    grade: stable
+    confinement: strict
+    license: "MIT"

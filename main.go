@@ -27,6 +27,14 @@ type CLI struct {
 	Version   kong.VersionFlag `kong:"short='v',help='Show version'"`
 }
 
+// Build-time variables for version info
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+	builtBy = "unknown"
+)
+
 // @title Your Project API
 // @version 1.0
 // @description This is a sample server for your project
@@ -44,10 +52,10 @@ type CLI struct {
 func main() {
 	var cli CLI
 	ctx := kong.Parse(&cli,
-		kong.Name("go-api"),
+		kong.Name("your-project"),
 		kong.Description("A REST API server with Gin, GORM, and SQLite"),
 		kong.Vars{
-			"version": "1.0.0",
+			"version": fmt.Sprintf("%s (%s) built on %s by %s", version, commit, date, builtBy),
 		},
 	)
 

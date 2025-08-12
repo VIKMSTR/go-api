@@ -39,7 +39,7 @@ jobs:
         run: go list -json -deps ./... > deps.json
 
       - name: Run Nancy
-        uses: sonatypecommunity/nancy-github-action@main
+        uses: sonatype-nexus-community/nancy-github-action@main
         with:
           nancyCommand: sleuth
           nancyArgs: --input deps.json

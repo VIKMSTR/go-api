@@ -38,12 +38,12 @@ builds:
 
 archives:
   - id: "archive"
-    builds:
+    ids:
       - "go-api"
-    format: tar.gz
+    formats: ["tar.gz"]
     format_overrides:
       - goos: windows
-        format: zip
+        formats: ["zip"]
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - README.md
@@ -103,7 +103,7 @@ release:
 # Docker images
 dockers:
   - image_templates:
-      - "ghcr.io/your-github-username/your-project-name:{{ .Version }}-amd64"
+      - "ghcr.io/vikmstr/go-api:{{ .Version }}-amd64"
     dockerfile: Dockerfile
     use: buildx
     build_flag_templates:
@@ -114,7 +114,7 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.source=https://github.com/VIKMSTR/go-api"
   - image_templates:
-      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-arm64"
+      - "ghcr.io/vikmstr/go-api:{{ .Version }}-arm64"
     dockerfile: Dockerfile
     use: buildx
     build_flag_templates:
@@ -126,14 +126,14 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/VIKMSTR/go-api"
 
 docker_manifests:
-  - name_template: "ghcr.io/VIKMSTR/go-api:{{ .Version }}"
+  - name_template: "ghcr.io/vikmstr/go-api:{{ .Version }}"
     image_templates:
-      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-amd64"
-      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-arm64"
-  - name_template: "ghcr.io/VIKMSTR/go-api:latest"
+      - "ghcr.io/vikmstr/go-api:{{ .Version }}-amd64"
+      - "ghcr.io/vikmstr/go-api:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/vikmstr/go-api:latest"
     image_templates:
-      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-amd64"
-      - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-arm64"
+      - "ghcr.io/vikmstr/go-api:{{ .Version }}-amd64"
+      - "ghcr.io/vikmstr/go-api:{{ .Version }}-arm64"
 # Homebrew tap (optional)
 #brews:
 #  - name: "your-project"

@@ -3,7 +3,7 @@ package config
 import (
 	"log/slog"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite" // slower but portable sqlite driver, that does not need CGO. In case of high traffic, consider using non portable CGO one
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )

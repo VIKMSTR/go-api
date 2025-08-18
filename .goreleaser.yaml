@@ -134,7 +134,6 @@ docker_manifests:
     image_templates:
       - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-amd64"
       - "ghcr.io/VIKMSTR/go-api:{{ .Version }}-arm64"
-
 # Homebrew tap (optional)
 #brews:
 #  - name: "your-project"
@@ -149,10 +148,10 @@ docker_manifests:
 #      bin.install "your-project"
 
 # Snapcraft (optional)
-snapcrafts:
-  - name: "go-api"
-    summary: "The go-api application"
-    description: "Example of go-api"
-    grade: stable
-    confinement: strict
-    license: "MIT"
+#snapcrafts:
+#  - name: "go-api"
+#    summary: "The go-api application"
+#    description: "Example of go-api"
+#    grade: stable
+#    confinement: strict
+#    license: "MIT"

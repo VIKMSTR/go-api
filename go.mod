@@ -3,7 +3,7 @@ module go-api
 go 1.24.6
 
 require (
-	github.com/alecthomas/kong v1.12.1
+	github.com/alecthomas/kong v1.13.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/samber/slog-gin v1.17.2
